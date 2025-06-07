@@ -1,0 +1,17 @@
+{
+  "name": "jdwx/stream",
+  "description": "A simple PHP module for handling arbitrarily large data streams",
+  "license": "MIT",
+  "autoload":{
+    "psr-4": {
+      "JDWX\\Stream\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.3.0"
+  },
+  "require-dev": {
+    "jetbrains/phpstorm-attributes": "^1.0",
+    "phpunit/phpunit": "^10"
+  }
+}
