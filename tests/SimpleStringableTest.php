@@ -4,10 +4,10 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web\Tests\Stream;
+namespace JDWX\Stream\Tests;
 
 
-use JDWX\Web\Stream\SimpleStringable;
+use JDWX\Stream\SimpleStringable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

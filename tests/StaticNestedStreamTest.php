@@ -4,11 +4,11 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web\Tests\Stream;
+namespace JDWX\Stream\Tests;
 
 
-use JDWX\Web\Stream\AbstractNestedStringableStream;
-use JDWX\Web\Stream\StaticNestedStream;
+use JDWX\Stream\AbstractNestedStringableStream;
+use JDWX\Stream\StaticNestedStream;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

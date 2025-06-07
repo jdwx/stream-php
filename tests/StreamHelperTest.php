@@ -4,12 +4,12 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web\Tests\Stream;
+namespace JDWX\Stream\Tests;
 
 
-use JDWX\Web\Stream\SimpleStringable;
-use JDWX\Web\Stream\StreamHelper;
-use JDWX\Web\Stream\StringableList;
+use JDWX\Stream\SimpleStringable;
+use JDWX\Stream\StreamHelper;
+use JDWX\Stream\StringableList;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Stringable;

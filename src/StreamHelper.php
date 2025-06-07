@@ -4,7 +4,7 @@
 declare( strict_types = 1 );
 
 
-namespace JDWX\Web\Stream;
+namespace JDWX\Stream;
 
 
 use Stringable;
