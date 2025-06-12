@@ -18,7 +18,7 @@ trait StringableListTrait {
 
 
     /**
-     * @param iterable<string|Stringable|iterable<string|Stringable|null>|null>|string|Stringable|null ...$i_children
+     * @param iterable<int|string, iterable<int|string, iterable<int|string, iterable<int|string, string|Stringable|null>>|string|Stringable|null>|string|Stringable|null>|string|Stringable|null ...$i_children
      * @noinspection PhpDocSignatureInspection
      * @suppress PhanTypeMismatchReturn
      */
@@ -39,7 +39,7 @@ trait StringableListTrait {
     }
 
 
-    /** @return iterable<string|Stringable> */
+    /** @return iterable<int|string, string|Stringable> */
     public function children( ?callable $i_fnFilter = null ) : iterable {
         foreach ( $this->rChildren as $child ) {
             if ( ! $i_fnFilter || $i_fnFilter( $child ) ) {
@@ -91,8 +91,7 @@ trait StringableListTrait {
     public function removeChild( string|Stringable $i_child ) : static {
         foreach ( $this->rChildren as $i => $child ) {
             if ( $child === $i_child ) {
-                unset( $this->rChildren[ $i ] );
-                return $this;
+                return $this->removeNthChild( $i );
             }
         }
         return $this;
@@ -111,18 +110,21 @@ trait StringableListTrait {
     /** @suppress PhanTypeMismatchReturn */
     public function removeNthChild( int $i_n = 0 ) : static {
         if ( isset( $this->rChildren[ $i_n ] ) ) {
-            unset( $this->rChildren[ $i_n ] );
+            $r = $this->rChildren;
+            unset( $r[ $i_n ] );
+            $this->rChildren = array_values( $r );
         }
         return $this;
     }
 
 
     /**
-     * @param iterable<string|Stringable|iterable<string|Stringable|null>|null>|string|Stringable|null $i_child
+     * @param iterable<int|string, iterable<int|string, iterable<int|string, iterable<int|string, string|Stringable|null>>|string|Stringable|null>|string|Stringable|null>|string|Stringable|null $i_child
      * @suppress PhanTypeMismatchReturn
      */
     protected function appendOne( iterable|string|Stringable|null $i_child ) : static {
         if ( is_iterable( $i_child ) ) {
+            /** @phpstan-var iterable<int|string, string|Stringable|null> $i_child */
             return $this->append( ... $i_child );
         }
         return $this->appendChild( $i_child );

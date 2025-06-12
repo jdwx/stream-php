@@ -13,7 +13,7 @@ use Stringable;
 trait NestedStreamableTrait {
 
 
-    /** @return iterable<string|Stringable> */
+    /** @return iterable<int|string, string|Stringable> */
     public function stream() : iterable {
         yield from StreamHelper::yield( $this->prefix() );
         yield from StreamHelper::yield( $this->infix() );
@@ -21,15 +21,15 @@ trait NestedStreamableTrait {
     }
 
 
-    /** @return iterable<string|Stringable>|string|Stringable */
+    /** @return iterable<int|string, string|Stringable>|string|Stringable */
     abstract protected function infix() : iterable|string|Stringable;
 
 
-    /** @return iterable<string|Stringable>|string|Stringable */
+    /** @return iterable<int|string, string|Stringable>|string|Stringable */
     abstract protected function postfix() : iterable|string|Stringable;
 
 
-    /** @return iterable<string|Stringable>|string|Stringable */
+    /** @return iterable<int|string, string|Stringable>|string|Stringable */
     abstract protected function prefix() : iterable|string|Stringable;
 
 

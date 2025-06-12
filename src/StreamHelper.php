@@ -10,11 +10,21 @@ namespace JDWX\Stream;
 use Stringable;
 
 
+/**
+ * BasicStream iterable<int|string, string|Stringable>|string|Stringable
+ * NestedStream iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable
+ * InfiniteStream iterable<int|string, iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable>|string|Stringable
+ *
+ * NullableIterableStream iterable<int|string, string|Stringable|null>
+ * NullableBasicStream iterable<int|string, iterable<int|string, string|Stringable|null>>|string|Stringable|null
+ * NullableNestedStream iterable<int|string, iterable<int|string, iterable<int|string, string|Stringable|null>>|string|Stringable|null>|string|Stringable|null
+ * NullableInfiniteStream iterable<int|string, iterable<int|string, iterable<int|string, iterable<int|string, string|Stringable|null>>|string|Stringable|null>|string|Stringable|null>|string|Stringable|null
+ */
 final class StreamHelper {
 
 
     /**
-     * @param iterable<string|Stringable|iterable<string|Stringable|iterable<mixed>>>|string|Stringable $i_stream
+     * @param iterable<int|string, iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable>|string|Stringable $i_stream
      * @return list<string|Stringable>
      *
      * This differs from StreamInterface::asList() because it flattens the list all the
@@ -26,7 +36,7 @@ final class StreamHelper {
     }
 
 
-    /** @param iterable<string|Stringable|iterable<string|Stringable|iterable<mixed>>>|string|Stringable $i_stream */
+    /** @param iterable<int|string, iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable>|string|Stringable $i_stream */
     public static function toString( iterable|string|Stringable $i_stream ) : string {
         if ( is_string( $i_stream ) ) {
             return $i_stream;
@@ -39,8 +49,8 @@ final class StreamHelper {
 
 
     /**
-     * @param iterable<string|Stringable>|string|Stringable $i_chunk
-     * @return iterable<string|Stringable>
+     * @param iterable<int|string, string|Stringable>|string|Stringable $i_chunk
+     * @return iterable<int|string, string|Stringable>
      */
     public static function yield( iterable|string|Stringable $i_chunk ) : iterable {
         if ( is_string( $i_chunk ) || $i_chunk instanceof Stringable ) {
@@ -52,8 +62,8 @@ final class StreamHelper {
 
 
     /**
-     * @param iterable<string|Stringable|iterable<string|Stringable>>|string|Stringable $i_chunk
-     * @return iterable<string|Stringable>
+     * @param iterable<int|string, iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable>|string|Stringable $i_chunk
+     * @return iterable<int|string, string|Stringable>
      */
     public static function yieldDeep( iterable|string|Stringable $i_chunk ) : iterable {
         if ( $i_chunk instanceof StreamInterface ) {
@@ -63,8 +73,9 @@ final class StreamHelper {
             yield $i_chunk;
             return;
         }
-        foreach ( $i_chunk as $stChunk ) {
-            yield from self::yieldDeep( $stChunk );
+        foreach ( $i_chunk as $chunk ) {
+            /** @phpstan-var iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable $chunk */
+            yield from self::yieldDeep( $chunk );
         }
     }
 
