@@ -7,6 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Stream;
 
 
+use JDWX\Strict\TypeIs;
 use Stringable;
 
 
@@ -62,6 +63,21 @@ final class StreamHelper {
 
 
     /**
+     * @param iterable<int|string, string|Stringable>|string|Stringable $i_chunk
+     * @return iterable<int, string|Stringable>
+     */
+    public static function yieldList( iterable|string|Stringable $i_chunk ) : iterable {
+        if ( is_string( $i_chunk ) || ( $i_chunk instanceof Stringable && ! is_iterable( $i_chunk ) ) ) {
+            yield $i_chunk;
+            return;
+        }
+        foreach ( $i_chunk as $chunk ) {
+            yield TypeIs::stringy( $chunk );
+        }
+    }
+
+
+    /**
      * @param iterable<int|string, iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable>|string|Stringable $i_chunk
      * @return iterable<int|string, string|Stringable>
      */
@@ -76,6 +92,25 @@ final class StreamHelper {
         foreach ( $i_chunk as $chunk ) {
             /** @phpstan-var iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable $chunk */
             yield from self::yieldDeep( $chunk );
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable>|string|Stringable $i_chunk
+     * @return iterable<int, string|Stringable>
+     */
+    public static function yieldDeepList( iterable|string|Stringable $i_chunk ) : iterable {
+        if ( $i_chunk instanceof StreamInterface ) {
+            $i_chunk = $i_chunk->stream();
+        }
+        if ( is_string( $i_chunk ) || ( $i_chunk instanceof Stringable && ! is_iterable( $i_chunk ) ) ) {
+            yield $i_chunk;
+            return;
+        }
+        foreach ( $i_chunk as $chunk ) {
+            /** @phpstan-var iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable $chunk */
+            yield from self::yieldDeepList( $chunk );
         }
     }
 

@@ -111,15 +111,7 @@ final class StreamHelperTest extends TestCase {
             [ 'TEST_CONTENT_1', 'TEST_CONTENT_2' ],
             iterator_to_array( StreamHelper::yieldDeep( [ 'TEST_CONTENT_1', 'TEST_CONTENT_2' ] ), false )
         );
-        $st = new class() implements Stringable {
-
-
-            public function __toString() : string {
-                return 'TEST_CONTENT_3';
-            }
-
-
-        };
+        $st = new SimpleStringable( 'TEST_CONTENT_3' );
         self::assertSame(
             [ $st ],
             iterator_to_array( StreamHelper::yieldDeep( $st ), false )
@@ -134,6 +126,51 @@ final class StreamHelperTest extends TestCase {
         self::assertSame(
             [ 'Baz', 'Foo', $bar ],
             iterator_to_array( StreamHelper::yieldDeep( $stl2 ), false )
+        );
+    }
+
+
+    public function testYieldDeepList() : void {
+        self::assertSame(
+            [ 'TEST_CONTENT' ],
+            iterator_to_array( StreamHelper::yieldDeepList( 'TEST_CONTENT' ), false )
+        );
+        self::assertSame(
+            [ 'TEST_CONTENT_1', 'TEST_CONTENT_2' ],
+            iterator_to_array( StreamHelper::yieldDeepList( [ 'TEST_CONTENT_1', 'TEST_CONTENT_2' ] ), false )
+        );
+        $st = new SimpleStringable( 'TEST_CONTENT_3' );
+        self::assertSame(
+            [ $st ],
+            iterator_to_array( StreamHelper::yieldDeepList( $st ), false )
+        );
+    }
+
+
+    public function testYieldDeepListForNestedStreams() : void {
+        $bar = new SimpleStringable( 'Bar' );
+        $stl = new StringableList( [ 'Foo', $bar ] );
+        $stl2 = new StringableList( [ 'Baz', $stl ] );
+        self::assertSame(
+            [ 'Baz', 'Foo', $bar ],
+            iterator_to_array( StreamHelper::yieldDeepList( $stl2 ), false )
+        );
+    }
+
+
+    public function testYieldList() : void {
+        self::assertSame(
+            [ 'TEST_CONTENT' ],
+            iterator_to_array( StreamHelper::yieldList( 'TEST_CONTENT' ), false )
+        );
+        self::assertSame(
+            [ 'TEST_CONTENT_1', 'TEST_CONTENT_2' ],
+            iterator_to_array( StreamHelper::yieldList( [ 'TEST_CONTENT_1', 'TEST_CONTENT_2' ] ), false )
+        );
+        $st = new SimpleStringable( 'TEST_CONTENT_3' );
+        self::assertSame(
+            [ $st ],
+            iterator_to_array( StreamHelper::yieldList( $st ), false )
         );
     }
 
