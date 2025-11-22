@@ -7,7 +7,7 @@ declare( strict_types = 1 );
 namespace JDWX\Stream;
 
 
-use JDWX\Strict\TypeIs;
+use Psr\Log\LoggerInterface;
 use Stringable;
 
 
@@ -45,7 +45,7 @@ final class StreamHelper {
         if ( $i_stream instanceof Stringable ) {
             return $i_stream->__toString();
         }
-        return join( '', self::asList( $i_stream ) );
+        return implode( '', self::asList( $i_stream ) );
     }
 
 
@@ -59,21 +59,6 @@ final class StreamHelper {
             return;
         }
         yield from $i_chunk;
-    }
-
-
-    /**
-     * @param iterable<int|string, string|Stringable>|string|Stringable $i_chunk
-     * @return iterable<int, string|Stringable>
-     */
-    public static function yieldList( iterable|string|Stringable $i_chunk ) : iterable {
-        if ( is_string( $i_chunk ) || ( $i_chunk instanceof Stringable && ! is_iterable( $i_chunk ) ) ) {
-            yield $i_chunk;
-            return;
-        }
-        foreach ( $i_chunk as $chunk ) {
-            yield TypeIs::stringy( $chunk );
-        }
     }
 
 
@@ -111,6 +96,29 @@ final class StreamHelper {
         foreach ( $i_chunk as $chunk ) {
             /** @phpstan-var iterable<int|string, string|Stringable|iterable<int|string, string|Stringable>|string|Stringable>|string|Stringable $chunk */
             yield from self::yieldDeepList( $chunk );
+        }
+    }
+
+
+    /**
+     * @param iterable<int|string, string|Stringable>|string|Stringable $i_chunk
+     * @return iterable<int, string|Stringable>
+     */
+    public static function yieldList( iterable|string|Stringable $i_chunk, ?LoggerInterface $i_logger = null ) : iterable {
+        if ( is_string( $i_chunk ) || ( $i_chunk instanceof Stringable && ! is_iterable( $i_chunk ) ) ) {
+            yield $i_chunk;
+            return;
+        }
+        foreach ( $i_chunk as $chunk ) {
+            if ( is_string( $chunk ) || $chunk instanceof Stringable ) {
+                yield $chunk;
+            } elseif ( is_int( $chunk ) || is_float( $chunk ) ) {
+                yield strval( $chunk );
+            } elseif ( is_null( $chunk ) ) {
+                $i_logger?->debug( 'Null chunk skipped' );
+            } else {
+                throw new \RuntimeException( 'Invalid chunk type: ' . get_debug_type( $chunk ) );
+            }
         }
     }
 

@@ -172,6 +172,18 @@ final class StreamHelperTest extends TestCase {
             [ $st ],
             iterator_to_array( StreamHelper::yieldList( $st ), false )
         );
+
+        self::assertSame(
+            [ '123', '456.789' ],
+            /** @phpstan-ignore argument.type */
+            iterator_to_array( StreamHelper::yieldList( [ 123, 456.789, null ] ), false )
+        );
+
+        $this->expectException( \RuntimeException::class );
+        /** @phpstan-ignore argument.type */
+        $x = iterator_to_array( StreamHelper::yieldList( [ false ] ) );
+        /** @noinspection ForgottenDebugOutputInspection */
+        var_dump( $x );
     }
 
 
