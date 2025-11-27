@@ -158,6 +158,7 @@ final class StreamHelperTest extends TestCase {
     }
 
 
+    /** @suppress PhanTypeMismatchArgument */
     public function testYieldList() : void {
         self::assertSame(
             [ 'TEST_CONTENT' ],
